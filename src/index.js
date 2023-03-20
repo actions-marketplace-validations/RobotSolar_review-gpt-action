@@ -7,9 +7,9 @@ run((app) => {
     const pullRequest = context.payload.pull_request;
 
     if (
-      pull_request.state === 'closed' ||
-      pull_request.locked ||
-      pull_request.draft
+      pullRequest.state === 'closed' ||
+      pullRequest.locked ||
+      pullRequest.draft
     ) {
       return 'invalid event payload';
     }
