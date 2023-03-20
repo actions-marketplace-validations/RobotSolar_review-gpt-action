@@ -1,0 +1,5 @@
+name: Review Dobby
+description: "Friend for code review"
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
