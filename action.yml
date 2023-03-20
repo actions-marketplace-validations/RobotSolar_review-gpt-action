@@ -1,5 +1,8 @@
 name: Review Dobby
 description: "Friend for code review"
+branding:
+  icon: "aperture"
+  color: blue
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: "node16"
+  main: "dist/index.js"
