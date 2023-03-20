@@ -28,7 +28,32 @@ run((app) => {
     }
 
     for (let i = 0; i < changedFiles.length; i++) {
-      app.log(changedFiles[i]);
+      const file = changedFiles[i];
+      const patch = file.patch || '';
+
+      if (!patch) {
+        continue;
+      }
+
+      app.log({
+        repo: repo.repo,
+        owner: repo.owner,
+        pull_number: context.pullRequest().pull_number,
+        commit_id: commits[commits.length - 1].sha,
+        path: file.filename,
+        body: 'hello world',
+        position: patch.split('\n').length - 1,
+      });
+
+      await context.octokit.pulls.createReviewComment({
+        repo: repo.repo,
+        owner: repo.owner,
+        pull_number: context.pullRequest().pull_number,
+        commit_id: commits[commits.length - 1].sha,
+        path: file.filename,
+        body: 'hello world',
+        position: patch.split('\n').length - 1,
+      });
     }
     return;
     // return context.octokit.issues.createComment(
