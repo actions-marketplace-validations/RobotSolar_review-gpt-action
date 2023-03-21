@@ -1,4 +1,5 @@
 const { run } = require('@probot/adapter-github-actions');
+const { Chat } = require('./chat');
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
@@ -7,6 +8,8 @@ run((app) => {
     if (!OPENAI_API_KEY) {
       return 'OPENAI_API_KEY is not set';
     }
+
+    const chat = new Chat(OPENAI_API_KEY);
     const repo = context.repo();
     
     const pullRequest = context.payload.pull_request;
@@ -45,15 +48,8 @@ run((app) => {
         continue;
       }
 
-      app.log({
-        repo: repo.repo,
-        owner: repo.owner,
-        pull_number: context.pullRequest().pull_number,
-        commit_id: commits[commits.length - 1].sha,
-        path: file.filename,
-        body: 'hello world',
-        position: patch.split('\n').length - 1,
-      });
+      const res = await chat.codeReview(patch);
+      app.log(res);
 
       await context.octokit.pulls.createReviewComment({
         repo: repo.repo,
@@ -61,7 +57,7 @@ run((app) => {
         pull_number: context.pullRequest().pull_number,
         commit_id: commits[commits.length - 1].sha,
         path: file.filename,
-        body: 'hello world',
+        body: res.text,
         position: patch.split('\n').length - 1,
       });
     }
