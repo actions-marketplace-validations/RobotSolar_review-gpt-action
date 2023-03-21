@@ -49,7 +49,6 @@ run((app) => {
       }
 
       const res = await chat.codeReview(patch);
-      app.log(res);
 
       await context.octokit.pulls.createReviewComment({
         repo: repo.repo,
@@ -57,13 +56,10 @@ run((app) => {
         pull_number: context.pullRequest().pull_number,
         commit_id: commits[commits.length - 1].sha,
         path: file.filename,
-        body: res.text,
+        body: res.message.content,
         position: patch.split('\n').length - 1,
       });
     }
-    return;
-    // return context.octokit.issues.createComment(
-    //   context.issue({ body: 'Hello, World!' })
-    // );
+    return 'success';
   });
 });

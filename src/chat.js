@@ -15,17 +15,14 @@ ${patch}
   };
 
   codeReview = async (patch) => {
-    if (!patch) {
-      return '';
-    }
     const prompt = this.generatePrompt(patch);
 
-    const res = await this.openai.createChatCompletion({
+    const { data } = await this.openai.createChatCompletion({
       model: process.env.MODEL || 'gpt-3.5-turbo',
       temperature: +(process.env.temperature || 0) || 1,
       top_p: +(process.env.temperature || 0) || 1,
       messages: [{role: 'user', content: prompt}],
     });
-    return res;
+    return data.choices[0];
   };
 }
