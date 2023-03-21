@@ -1,15 +1,11 @@
-import { ChatGPTAPI } from 'chatgpt';
+const { Configuration, OpenAIApi } = require('openai');
 
 export class Chat {
   constructor(apiKey) {
-    this.chatAPI = new ChatGPTAPI({
+    const configuration = new Configuration({
       apiKey,
-      completionParams: {
-        model: process.env.MODEL || 'gpt-3.5-turbo',
-        temperature: +(process.env.temperature || 0) || 1,
-        top_p: +(process.env.temperature || 0) || 1,
-      },
     });
+    this.openai = new OpenAIApi(configuration);
   }
 
   generatePrompt = (patch) => {
@@ -23,7 +19,13 @@ ${patch}
       return '';
     }
     const prompt = this.generatePrompt(patch);
-    const res = await this.chatAPI.sendMessage(prompt);
+
+    const res = await this.openai.createChatCompletion({
+      model: process.env.MODEL || 'gpt-3.5-turbo',
+      temperature: +(process.env.temperature || 0) || 1,
+      top_p: +(process.env.temperature || 0) || 1,
+      messages: [{role: 'user', content: prompt}],
+    });
     return res;
   };
 }
