@@ -1,6 +1,7 @@
 const { run } = require('@probot/adapter-github-actions');
 const { Chat } = require('./chat');
 
+const MAX_PATCH_COUNT = 4000;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 run((app) => {
@@ -39,12 +40,17 @@ run((app) => {
       const file = changedFiles[i];
       const patch = file.patch || '';
 
-      app.log(file);
-
       if (['modified', 'added'].indexOf(file.status) === -1) {
+        app.log(`skip file "${file.filename}" (status: "${file.status}" / size: ${patch.length}})`);
         continue;
       }
-      if (!patch) {
+      const filename = file.filename.split('/').pop();
+      if (filename && ['npm-lock.json', 'yarn.lock'].indexOf(filename) !== -1) {
+        app.log(`skip file "${file.filename}" (status: "${file.status}" / size: ${patch.length}})`);
+        continue;
+      }
+      if (!patch || patch.length > MAX_PATCH_COUNT) {
+        app.log(`skip file "${file.filename}" (status: "${file.status}" / size: ${patch.length}})`);
         continue;
       }
 
