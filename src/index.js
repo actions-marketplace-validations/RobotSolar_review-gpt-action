@@ -7,7 +7,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 run((app) => {
   app.on('pull_request.opened', async (context) => {
     if (!OPENAI_API_KEY) {
-      return 'OPENAI_API_KEY is not set';
+      throw new Error('OPENAI_API_KEY is not set');
     }
 
     const chat = new Chat(OPENAI_API_KEY);
@@ -41,16 +41,16 @@ run((app) => {
       const patch = file.patch || '';
 
       if (['modified', 'added'].indexOf(file.status) === -1) {
-        app.log(`skip file "${file.filename}" (status: "${file.status}" / size: ${patch.length}})`);
+        app.log(`skip file "${file.filename}" (status: "${file.status}" / size: ${patch.length})`);
         continue;
       }
       const filename = file.filename.split('/').pop();
-      if (filename && ['npm-lock.json', 'yarn.lock'].indexOf(filename) !== -1) {
-        app.log(`skip file "${file.filename}" (status: "${file.status}" / size: ${patch.length}})`);
+      if (filename && ['package-lock.json', 'yarn.lock'].indexOf(filename) !== -1) {
+        app.log(`skip file "${file.filename}" (status: "${file.status}" / size: ${patch.length})`);
         continue;
       }
       if (!patch || patch.length > MAX_PATCH_COUNT) {
-        app.log(`skip file "${file.filename}" (status: "${file.status}" / size: ${patch.length}})`);
+        app.log(`skip file "${file.filename}" (status: "${file.status}" / size: ${patch.length})`);
         continue;
       }
 
