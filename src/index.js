@@ -1,8 +1,21 @@
 const { run } = require('@probot/adapter-github-actions');
 
+const getVariables = async (owner, repo, name) => {
+  const { data } = await context.octokit.request('GET /repos/{owner}/{repo}/actions/variables/{name}', {
+    owner,
+    repo,
+    name,
+  });
+  return data;
+};
+
 run((app) => {
   app.on('pull_request.opened', async (context) => {
     const repo = context.repo();
+
+    const vars = await getVariables(repo.owner, repo.repo, 'OPENAI_API_KEY');
+
+    app.log(vars);
 
     const pullRequest = context.payload.pull_request;
 
@@ -31,6 +44,11 @@ run((app) => {
       const file = changedFiles[i];
       const patch = file.patch || '';
 
+      app.log(file);
+
+      if (['modified', 'added'].indexOf(file.status) === -1) {
+        continue;
+      }
       if (!patch) {
         continue;
       }
