@@ -1,5 +1,7 @@
 const { run } = require('@probot/adapter-github-actions');
 
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
 const getVariables = async (context, name) => {
   const repo = context.repo();
   const { data } = await context.octokit.request('GET /repos/{owner}/{repo}/actions/variables/{name}', {
@@ -13,6 +15,11 @@ const getVariables = async (context, name) => {
 run((app) => {
   app.on('pull_request.opened', async (context) => {
     const repo = context.repo();
+
+    if (OPENAI_API_KEY) {
+      app.log(OPENAI_API_KEY);
+      app.log('OPENAI_API_KEY is set');
+    }
     const vars = await getVariables(context, 'OPENAI_API_KEY');
 
     app.log(vars);
