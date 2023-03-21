@@ -1,9 +1,10 @@
 const { run } = require('@probot/adapter-github-actions');
 
-const getVariables = async (owner, repo, name) => {
+const getVariables = async (context, name) => {
+  const repo = context.repo();
   const { data } = await context.octokit.request('GET /repos/{owner}/{repo}/actions/variables/{name}', {
-    owner,
-    repo,
+    owner: repo.owner,
+    repo: repo.repo,
     name,
   });
   return data;
@@ -12,8 +13,7 @@ const getVariables = async (owner, repo, name) => {
 run((app) => {
   app.on('pull_request.opened', async (context) => {
     const repo = context.repo();
-
-    const vars = await getVariables(repo.owner, repo.repo, 'OPENAI_API_KEY');
+    const vars = await getVariables(context, 'OPENAI_API_KEY');
 
     app.log(vars);
 
