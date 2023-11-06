@@ -53,8 +53,8 @@ run((app) => {
         app.log(`skip file "${file.filename}" (status: "${file.status}" / size: ${patch.length})`);
         continue;
       }
-
-      const res = await chat.codeReview(patch);
+      const ext = file.filename.split('.').pop();
+      const res = await chat.codeReview(patch, ext);
 
       await context.octokit.pulls.createReviewComment({
         repo: repo.repo,

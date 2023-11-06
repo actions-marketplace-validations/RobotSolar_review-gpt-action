@@ -13,7 +13,7 @@ on:
     types:
       - opened
 env:
-  lang: english
+  lang: english # change the language you want to use
 
 jobs:
   test:
