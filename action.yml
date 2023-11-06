@@ -1,5 +1,5 @@
-name: Review Dobby
-description: "Friend for code review"
+name: "Review PR with GPT-3.5"
+description: "Review your PR using GPT-3.5"
 branding:
   icon: "aperture"
   color: blue

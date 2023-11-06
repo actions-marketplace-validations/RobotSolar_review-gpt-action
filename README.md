@@ -1,10 +1,10 @@
 # Review GPT Action
 
-ChatGPT 와 함께하는 코드리뷰 💬
+ChatGPT for code review 💬
 
-## Github Actions 사용
-1. `OPEN_API_KEY` 시크릿 등록
-2. `.github/workflows/[파일명].yml` 워크플로우 등록
+## Github Actions Usage
+1. `OPEN_API_KEY` API KEY [OpenAI API KEY](https://platform.openai.com/account/api-keys)
+2. `.github/workflows/[your-workflow].yml` github actions workflow
 
 ```yml
 name: Code Review
@@ -12,6 +12,8 @@ on:
   pull_request:
     types:
       - opened
+env:
+  lang: english
 
 jobs:
   test:
@@ -20,9 +22,10 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - uses: hyeongyuan/review-gpt-action@v0.1.0
+      - uses: robotsolar/review-gpt-action@v0.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LANG: ${{ env.lang }}
 
 ```
