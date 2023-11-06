@@ -9,7 +9,7 @@ export class Chat {
   }
 
   generatePrompt = (patch) => {
-    return `Bellow is the code patch, please help me do a brief code review, Answer me in ${ process.env.LANGUAGE || 'english' } if any bug risk and improvement suggestion are welcome
+    return `Bellow is the code patch, please help me do a brief code review, Answer me in ${ process.env.LANG || 'english' } if any bug risk and improvement suggestion are welcome
 ${patch}
 `;
   };
