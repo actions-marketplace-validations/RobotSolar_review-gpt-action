@@ -9,7 +9,7 @@ export class Chat {
   }
 
   generatePrompt = (patch, ext) => {
-    return `review the below code ${ext} and help me do a brief code review for code smells, potential scalability issues, any bug risk and suggest improvements if it's necessary, answer me in ${ process.env.LANG || "english" }, be short and concise.
+    return `review the below code ${ext} and help me do a brief code review for code smells, potential scalability issues, any bug risk and suggest improvements, don't add inneccesary comments if there is no improvement. answer me in ${ process.env.LANG || "english" }, be short and concise and do not add resume or any irrelevant information.
 ${patch}
 `;
   };
